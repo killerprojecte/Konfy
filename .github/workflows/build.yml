@@ -34,7 +34,9 @@ jobs:
 
       # 执行 Gradle publish
       - name: Publish with Gradle
-        run: ./gradlew publish --no-daemon
+        run: |
+          chmod +x gradlew
+          ./gradlew publish --no-daemon
         env:
           REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
           REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
