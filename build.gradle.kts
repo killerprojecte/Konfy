@@ -121,7 +121,6 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             artifact(tasks.shadowJar)
-            artifact(tasks.javadoc)
             from(components["java"])
             groupId = project.group.toString()
             artifactId = project.name
