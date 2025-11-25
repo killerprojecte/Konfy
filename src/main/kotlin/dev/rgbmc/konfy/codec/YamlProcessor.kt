@@ -18,10 +18,10 @@ object YamlProcessor {
         defaultFlowStyle = FlowStyle.BLOCK,
         defaultScalarStyle = ScalarStyle.PLAIN
     )
-    
+
     private val loader = Load(loadSettings)
     private val dumper = Dump(dumpSettings)
-    
+
     /**
      * Process YAML with transformer before deserialization.
      * This allows for config migration and field transformations.
@@ -34,16 +34,16 @@ object YamlProcessor {
             is Map<*, *> -> data.toMutableMap() as MutableMap<String, Any>
             else -> mutableMapOf()
         }
-        
+
         // Apply transformer
         val wrapper = YamlWrapper(mutableMap)
         transformer.transform(wrapper)
-        
+
         // Remove obsolete keys
         for (key in transformer.getObsoleteKeys()) {
             wrapper.remove(key)
         }
-        
+
         // Dump back to YAML
         return dumper.dumpToString(wrapper.getRawMap())
     }
