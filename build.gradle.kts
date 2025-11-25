@@ -100,6 +100,10 @@ tasks.build {
     dependsOn("shadowJar")
 }
 
+tasks.jar {
+    archiveClassifier.set("minified")
+}
+
 tasks.shadowJar {
     archiveClassifier.set("")
     configurations = listOf(shade)
@@ -120,8 +124,11 @@ publishing {
     }
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks.shadowJar)
             from(components["java"])
+            // 移除默认 jar
+            artifacts.removeAll { it.extension == "jar" && it.classifier == null }
+            // 添加 shadowJar
+            artifact(tasks.shadowJar)
             groupId = project.group.toString()
             artifactId = project.name
             version += "-${details.gitHash.substring(0, 7)}"
