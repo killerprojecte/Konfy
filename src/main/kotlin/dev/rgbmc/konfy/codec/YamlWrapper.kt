@@ -1,5 +1,7 @@
 package dev.rgbmc.konfy.codec
 
+import java.io.File
+
 /**
  * Wrapper class for YAML data that provides convenient methods for accessing and modifying
  * configuration values using path notation (e.g., "database.host").
@@ -251,6 +253,26 @@ class YamlWrapper(private val data: MutableMap<String, Any>) {
         }
     }
 
+    /**
+     * Serialize this YamlWrapper to YAML text.
+     *
+     * @return YAML text representation
+     */
+    fun toText(): String {
+        val dumper = YamlProcessor.dumper
+        return dumper.dumpToString(data)
+    }
+
+    /**
+     * Save this YamlWrapper to a file.
+     *
+     * @param file Target file to save to
+     */
+    fun toFile(file: File) {
+        file.parentFile?.mkdirs()
+        file.writeText(toText())
+    }
+
     companion object {
         /**
          * Create a YamlWrapper from any data object.
@@ -266,6 +288,37 @@ class YamlWrapper(private val data: MutableMap<String, Any>) {
                 else -> mutableMapOf()
             }
             return YamlWrapper(map)
+        }
+
+        /**
+         * Load a YamlWrapper from YAML text.
+         *
+         * @param yamlText YAML text to parse
+         * @return YamlWrapper instance
+         */
+        fun fromText(yamlText: String): YamlWrapper {
+            val loader = YamlProcessor.loader
+
+            @Suppress("UNCHECKED_CAST")
+            val mutableMap = when (val data = loader.loadOne(yamlText)) {
+                is Map<*, *> -> data.toMutableMap() as MutableMap<String, Any>
+                else -> mutableMapOf()
+            }
+
+            return YamlWrapper(mutableMap)
+        }
+
+        /**
+         * Load a YamlWrapper from a YAML file.
+         *
+         * @param file YAML file to load
+         * @return YamlWrapper instance
+         */
+        fun fromFile(file: File): YamlWrapper {
+            if (!file.exists()) {
+                return YamlWrapper(mutableMapOf())
+            }
+            return fromText(file.readText())
         }
     }
 }

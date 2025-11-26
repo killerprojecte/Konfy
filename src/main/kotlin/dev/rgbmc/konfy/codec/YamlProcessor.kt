@@ -19,8 +19,8 @@ object YamlProcessor {
         defaultScalarStyle = ScalarStyle.PLAIN
     )
 
-    private val loader = Load(loadSettings)
-    private val dumper = Dump(dumpSettings)
+    internal val loader = Load(loadSettings)
+    internal val dumper = Dump(dumpSettings)
 
     /**
      * Process YAML with transformer before deserialization.
