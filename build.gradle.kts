@@ -124,11 +124,13 @@ publishing {
     }
     publications {
         create<MavenPublication>("maven") {
-            from(components["java"])
+            /*from(components["java"])
             // 移除默认 jar
-            artifacts.removeAll { it.extension == "jar" && it.classifier == null }
+            artifacts.removeAll { it.extension == "jar" && it.classifier == null }*/
             // 添加 shadowJar
             artifact(tasks.shadowJar)
+            artifact(tasks.named("sourcesJar"))
+            artifact(tasks.named("javadocJar"))
             groupId = project.group.toString()
             artifactId = project.name
             version += "-${details.gitHash.substring(0, 7)}"
